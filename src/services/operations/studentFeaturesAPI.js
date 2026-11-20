@@ -111,7 +111,7 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
             currency: orderData.currency || "INR",  // <-- changed
             amount: orderData.amount,
             order_id: orderData.id,
-            name: "StudyNotion",
+            name: "StudyTech",
             description: "Thank You for Purchasing the Course",
             image: rzpLogo,
             prefill: {
