@@ -179,9 +179,10 @@ exports.login = async (req, res) => {
   }
 }
 // Send OTP For Email Verification
-exports.sendotp = async (req, res) => {
-  try {
-    const { email } = req.body
+exports.sendotp = async (req, res) => 
+{
+  try{
+    const { email } = req.body;
 
     // Check if user is already present
     // Find user with provided email
@@ -224,7 +225,6 @@ exports.sendotp = async (req, res) => {
     return res.status(500).json({ success: false, error: error.message })
   }
 }
-
 // Controller for Changing Password
 exports.changePassword = async (req, res) => {
   try {

@@ -66,6 +66,11 @@ const otpTemplate = (otp) => {
 	
 	<body>
 		<div class="container">
+<<<<<<< Updated upstream
+=======
+			<a href="https://studytech-edtech-project.vercel.app"><img class="logo"
+					src="https://i.ibb.co/7Xyj3PC/logo.png" alt="StudyTech Logo"></a>
+>>>>>>> Stashed changes
 			<div class="message">OTP Verification Email</div>
 			<div class="body">
 				<p>Dear User,</p>
@@ -76,7 +81,11 @@ const otpTemplate = (otp) => {
 				Once your account is verified, you will have access to our platform and its features.</p>
 			</div>
 			<div class="support">If you have any questions or need assistance, please feel free to reach out to us at <a
+<<<<<<< Updated upstream
 					href="mailto:info@StudyTech.com">info@StudyTech.com</a>. We are here to help!</div>
+=======
+					href="mailto:info@studytech.com">info@studytech.com</a>. We are here to help!</div>
+>>>>>>> Stashed changes
 		</div>
 	</body>
 	
