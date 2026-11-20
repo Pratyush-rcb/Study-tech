@@ -16,6 +16,7 @@ exports.passwordUpdated = (email, name) => {
                 padding: 0;
             }
     
+    
             .container {
                 max-width: 600px;
                 margin: 0 auto;
@@ -54,25 +55,18 @@ exports.passwordUpdated = (email, name) => {
     
     <body>
         <div class="container">
-<<<<<<< Updated upstream
-=======
-            <a href="https://studytech-edtech-project.vercel.app"><img class="logo"
-                    src="https://i.ibb.co/7Xyj3PC/logo.png" alt="StudyTech Logo"></a>
->>>>>>> Stashed changes
+            <a href="https://studynotion-edtech-project.vercel.app"><img class="logo"
+                    src="https://i.ibb.co/7Xyj3PC/logo.png" alt="StudyNotion Logo"></a>
             <div class="message">Password Update Confirmation</div>
             <div class="body">
                 <p>Hey ${name},</p>
-                <p>Your StudyTech password has been successfully updated for the email <span class="highlight">${email}</span>.
+                <p>Your password has been successfully updated for the email <span class="highlight">${email}</span>.
                 </p>
                 <p>If you did not request this password change, please contact us immediately to secure your account.</p>
             </div>
             <div class="support">If you have any questions or need further assistance, please feel free to reach out to us
                 at
-<<<<<<< Updated upstream
-                <a href="mailto:info@StudyTech.com">info@StudyTech.com</a>. We are here to help!
-=======
-                <a href="mailto:info@studytech.com">info@studytech.com</a>. We are here to help!
->>>>>>> Stashed changes
+                <a href="mailto:info@studtech.com">info@studtech.com</a>. We are here to help!
             </div>
         </div>
     </body>
