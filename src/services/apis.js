@@ -1,4 +1,4 @@
-const BASE_URL = "https://study-tech-0q7p.onrender.com/api/v1" // "http://localhost:4000/api/v1"
+const BASE_URL = process.env.REACT_APP_BASE_URL || "https://study-tech-0q7p.onrender.com/api/v1" 
 
 // AUTH ENDPOINTS
 export const endpoints = {
