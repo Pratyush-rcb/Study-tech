@@ -40,7 +40,6 @@ OTPSchema.pre("save", async function (next) {
 	if (this.isNew) {
 		await sendVerificationEmail(this.email, this.otp);
 	}
-	next();
 });
 
 const OTP = mongoose.model("OTP", OTPSchema);
