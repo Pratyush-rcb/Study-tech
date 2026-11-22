@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import ProgressBar from "@ramonak/react-progress-bar"
-import { BiDotsVerticalRounded } from "react-icons/bi"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -13,15 +12,16 @@ export default function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState(null)
   const getEnrolledCourses = async () => {
     try {
-      const res = await getUserEnrolledCourses(token);
+      const res = await getUserEnrolledCourses(token)
 
-      setEnrolledCourses(res);
+      setEnrolledCourses(res)
     } catch (error) {
       console.log("Could not fetch enrolled courses.")
     }
-  };
+  }
   useEffect(() => {
-    getEnrolledCourses();
+    getEnrolledCourses()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -56,7 +56,7 @@ export default function EnrolledCourses() {
                 className="flex w-[45%] cursor-pointer items-center gap-4 px-5 py-3"
                 onClick={() => {
                   navigate(
-                    `/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`
+                    `/view-course/${course?._id}/section/${course?.courseContent?.[0]?._id}/sub-section/${course?.courseContent?.[0]?.subSection?.[0]?._id}`
                   )
                 }}
               >
@@ -68,9 +68,9 @@ export default function EnrolledCourses() {
                 <div className="flex max-w-xs flex-col gap-2">
                   <p className="font-semibold">{course.courseName}</p>
                   <p className="text-xs text-richblack-300">
-                    {course.courseDescription.length > 50
+                    {course?.courseDescription?.length > 50
                       ? `${course.courseDescription.slice(0, 50)}...`
-                      : course.courseDescription}
+                      : course?.courseDescription || ""}
                   </p>
                 </div>
               </div>

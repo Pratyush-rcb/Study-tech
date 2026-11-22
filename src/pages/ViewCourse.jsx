@@ -17,22 +17,47 @@ export default function ViewCourse() {
   const { token } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const [reviewModal, setReviewModal] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
     ;(async () => {
+      setLoading(true)
+      dispatch(setCourseSectionData([]))
+      dispatch(setEntireCourseData({}))
+      dispatch(setCompletedLectures([]))
+
       const courseData = await getFullDetailsOfCourse(courseId, token)
-      // console.log("Course Data here... ", courseData.courseDetails)
-      dispatch(setCourseSectionData(courseData.courseDetails.courseContent))
-      dispatch(setEntireCourseData(courseData.courseDetails))
-      dispatch(setCompletedLectures(courseData.completedVideos))
-      let lectures = 0
-      courseData?.courseDetails?.courseContent?.forEach((sec) => {
-        lectures += sec.subSection.length
-      })
-      dispatch(setTotalNoOfLectures(lectures))
+      if (!isMounted) return
+
+      if (courseData?.courseDetails) {
+        const content = courseData.courseDetails.courseContent || []
+        dispatch(setCourseSectionData(content))
+        dispatch(setEntireCourseData(courseData.courseDetails))
+        dispatch(setCompletedLectures(courseData.completedVideos || []))
+
+        let lectures = 0
+        content.forEach((sec) => {
+          lectures += sec?.subSection?.length || 0
+        })
+        dispatch(setTotalNoOfLectures(lectures))
+      }
+      setLoading(false)
     })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+
+    return () => {
+      isMounted = false
+    }
+  }, [courseId, token, dispatch])
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[calc(100vh-3.5rem)] flex-col items-center justify-center gap-3 text-richblack-50">
+        <div className="spinner"></div>
+        <p className="text-base font-medium">Loading...</p>
+      </div>
+    )
+  }
 
   return (
     <>

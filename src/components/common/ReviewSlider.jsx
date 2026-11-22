@@ -33,8 +33,6 @@ function ReviewSlider() {
     })()
   }, [])
 
-  // console.log(reviews)
-
   return (
     <div className="text-white">
       <div className="my-[50px] h-[184px] max-w-maxContentTab lg:max-w-maxContent">
@@ -51,6 +49,10 @@ function ReviewSlider() {
           className="w-full "
         >
           {reviews.map((review, i) => {
+            const reviewerName = review?.user?.firstName
+              ? `${review.user.firstName} ${review.user.lastName || ""}`.trim()
+              : "StudyTech Learner"
+
             return (
               <SwiperSlide key={i}>
                 <div className="flex flex-col gap-3 bg-richblack-800 p-3 text-[14px] text-richblack-25">
@@ -58,34 +60,38 @@ function ReviewSlider() {
                     <img
                       src={
                         review?.user?.image
-                          ? review?.user?.image
-                          : `https://api.dicebear.com/5.x/initials/svg?seed=${review?.user?.firstName} ${review?.user?.lastName}`
+                          ? review.user.image
+                          : `https://api.dicebear.com/5.x/initials/svg?seed=${encodeURIComponent(
+                              reviewerName
+                            )}`
                       }
-                      alt=""
+                      alt={reviewerName}
                       className="h-9 w-9 rounded-full object-cover"
                     />
                     <div className="flex flex-col">
-                      <h1 className="font-semibold text-richblack-5">{`${review?.user?.firstName} ${review?.user?.lastName}`}</h1>
+                      <h1 className="font-semibold text-richblack-5">
+                        {reviewerName}
+                      </h1>
                       <h2 className="text-[12px] font-medium text-richblack-500">
-                        {review?.course?.courseName}
+                        {review?.course?.courseName || "Course"}
                       </h2>
                     </div>
                   </div>
                   <p className="font-medium text-richblack-25">
-                    {review?.review.split(" ").length > truncateWords
-                      ? `${review?.review
+                    {(review?.review || "").split(" ").length > truncateWords
+                      ? `${(review?.review || "")
                           .split(" ")
                           .slice(0, truncateWords)
                           .join(" ")} ...`
-                      : `${review?.review}`}
+                      : `${review?.review || ""}`}
                   </p>
                   <div className="flex items-center gap-2 ">
                     <h3 className="font-semibold text-yellow-100">
-                      {review.rating.toFixed(1)}
+                      {(review?.rating || 0).toFixed(1)}
                     </h3>
                     <ReactStars
                       count={5}
-                      value={review.rating}
+                      value={review?.rating || 0}
                       size={20}
                       edit={false}
                       activeColor="#ffd700"
@@ -97,7 +103,6 @@ function ReviewSlider() {
               </SwiperSlide>
             )
           })}
-          {/* <SwiperSlide>Slide 1</SwiperSlide> */}
         </Swiper>
       </div>
     </div>

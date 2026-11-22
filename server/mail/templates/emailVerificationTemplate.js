@@ -111,7 +111,7 @@ const otpTemplate = (otp) => {
 				Once your account is verified, you will have access to our platform and its features.</p>
 			</div>
 			<div class="support" style="font-size: 14px; color: #64748b; background-color: #f8fafc; border-radius: 8px; margin-top: 24px; padding: 16px 18px; border-top: 1px solid #e2e8f0;">If you have any questions or need assistance, please feel free to reach out to us at <a
-					href="mailto:info@studytech.com" style="color: #1d4ed8; font-weight: bold; text-decoration: underline;">info@studynotion.com</a>. We are here to help!</div>
+					href="mailto:info@Studytech.com" style="color: #1d4ed8; font-weight: bold; text-decoration: underline;">info@studynotion.com</a>. We are here to help!</div>
 		</div>
 	</body>
 	

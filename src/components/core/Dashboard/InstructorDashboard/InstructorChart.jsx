@@ -1,57 +1,81 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Chart, registerables } from "chart.js"
 import { Pie } from "react-chartjs-2"
 
 Chart.register(...registerables)
 
 export default function InstructorChart({ courses }) {
-  // State to keep track of the currently selected chart
   const [currChart, setCurrChart] = useState("students")
 
-  // Function to generate random colors for the chart
-  const generateRandomColors = (numColors) => {
-    const colors = []
-    for (let i = 0; i < numColors; i++) {
-      const color = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(
-        Math.random() * 256
-      )}, ${Math.floor(Math.random() * 256)})`
-      colors.push(color)
-    }
-    return colors
-  }
+  const safeCourses = Array.isArray(courses) ? courses : []
 
-  // Data for the chart displaying student information
+  const studentColors = useMemo(() => {
+    const palette = ["#FFD60A", "#06D6A0", "#118AB2", "#EF476F", "#9B5DE5"]
+    return safeCourses.map(
+      (_, i) =>
+        palette[i % palette.length] ||
+        `hsl(${(i * 67) % 360}, 75%, 55%)`
+    )
+  }, [safeCourses.length])
+
+  const incomeColors = useMemo(() => {
+    const palette = ["#06D6A0", "#3B82F6", "#F97316", "#EC4899", "#EAB308"]
+    return safeCourses.map(
+      (_, i) =>
+        palette[i % palette.length] ||
+        `hsl(${(i * 83 + 120) % 360}, 75%, 55%)`
+    )
+  }, [safeCourses.length])
+
   const chartDataStudents = {
-    labels: courses.map((course) => course.courseName),
+    labels: safeCourses.map((course) => course?.courseName || "Unnamed Course"),
     datasets: [
       {
-        data: courses.map((course) => course.totalStudentsEnrolled),
-        backgroundColor: generateRandomColors(courses.length),
+        label: "Students Enrolled",
+        data: safeCourses.map(
+          (course) => course?.studentsEnrolled?.length || 0
+        ),
+        backgroundColor: studentColors,
+        borderColor: "#161D29",
+        borderWidth: 2,
       },
     ],
   }
 
-  // Data for the chart displaying income information
   const chartIncomeData = {
-    labels: courses.map((course) => course.courseName),
+    labels: safeCourses.map((course) => course?.courseName || "Unnamed Course"),
     datasets: [
       {
-        data: courses.map((course) => course.totalAmountGenerated),
-        backgroundColor: generateRandomColors(courses.length),
+        label: "Income (Rs.)",
+        data: safeCourses.map(
+          (course) =>
+            (course?.studentsEnrolled?.length || 0) *
+            (Number(course?.price) || 0)
+        ),
+        backgroundColor: incomeColors,
+        borderColor: "#161D29",
+        borderWidth: 2,
       },
     ],
   }
 
-  // Options for the chart
   const options = {
     maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "top",
+        labels: {
+          color: "#F1F2FF",
+        },
+      },
+    },
   }
 
   return (
     <div className="flex flex-1 flex-col gap-y-4 rounded-md bg-richblack-800 p-6">
       <p className="text-lg font-bold text-richblack-5">Visualize</p>
       <div className="space-x-4 font-semibold">
-        {/* Button to switch to the "students" chart */}
         <button
           onClick={() => setCurrChart("students")}
           className={`rounded-sm p-1 px-3 transition-all duration-200 ${
@@ -62,7 +86,6 @@ export default function InstructorChart({ courses }) {
         >
           Students
         </button>
-        {/* Button to switch to the "income" chart */}
         <button
           onClick={() => setCurrChart("income")}
           className={`rounded-sm p-1 px-3 transition-all duration-200 ${
@@ -74,9 +97,9 @@ export default function InstructorChart({ courses }) {
           Income
         </button>
       </div>
-      <div className="relative mx-auto aspect-square h-full w-full">
-        {/* Render the Pie chart based on the selected chart */}
+      <div className="relative mx-auto my-auto h-[270px] w-full max-w-[340px]">
         <Pie
+          key={currChart}
           data={currChart === "students" ? chartDataStudents : chartIncomeData}
           options={options}
         />

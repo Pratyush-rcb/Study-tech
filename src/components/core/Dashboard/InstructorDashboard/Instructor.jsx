@@ -35,13 +35,14 @@ export default function Instructor() {
     })();
   }, [token]);
 
-  // Compute statistics
-  const totalAmount = courses?.reduce(
-    (acc, curr) => acc + (curr.totalAmountGenerated || 0),
+  // Compute statistics from enrolled students and course price
+  const totalStudents = courses?.reduce(
+    (acc, curr) => acc + (curr?.studentsEnrolled?.length || 0),
     0
   );
-  const totalStudents = courses?.reduce(
-    (acc, curr) => acc + (curr.totalStudentsEnrolled || 0),
+  const totalAmount = courses?.reduce(
+    (acc, curr) =>
+      acc + (curr?.studentsEnrolled?.length || 0) * (Number(curr?.price) || 0),
     0
   );
 
