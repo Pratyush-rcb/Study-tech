@@ -10,6 +10,18 @@ const {
 const { paymentSuccessEmail } = require("../mail/templates/paymentSuccessEmail")
 const CourseProgress = require("../models/CourseProgress")
 
+const DEMO_USER_EMAILS = new Set([
+  "pk201929@gmail.com",
+  "demo.student@studytech.app",
+  "demo.instructor@studytech.app",
+])
+
+const isDemoAccount = (user) =>
+  Boolean(
+    user?.isDemo === true ||
+      (user?.email && DEMO_USER_EMAILS.has(user.email.trim().toLowerCase()))
+  )
+
 // Capture the payment and initiate the Razorpay order
 exports.capturePayment = async (req, res) => {
   const { courses } = req.body
@@ -108,7 +120,7 @@ exports.verifyPayment = async (req, res) => {
   return res.status(200).json({ success: true, message: "Payment Verified" })
 }
 
-// Send Payment Success Email (non-blocking if SMTP times out on Render)
+// Send Payment Success Email (fast skip for demo accounts; safe fallback on SMTP timeout)
 exports.sendPaymentSuccessEmail = async (req, res) => {
   const { orderId, paymentId, amount } = req.body
   const userId = req.user.id
@@ -127,19 +139,21 @@ exports.sendPaymentSuccessEmail = async (req, res) => {
         .json({ success: false, message: "Student not found" })
     }
 
-    try {
-      await mailSender(
-        enrolledStudent.email,
-        `Payment Received`,
-        paymentSuccessEmail(
-          `${enrolledStudent.firstName} ${enrolledStudent.lastName}`,
-          amount / 100,
-          orderId,
-          paymentId
+    if (!isDemoAccount(enrolledStudent)) {
+      try {
+        await mailSender(
+          enrolledStudent.email,
+          `Payment Received`,
+          paymentSuccessEmail(
+            `${enrolledStudent.firstName} ${enrolledStudent.lastName}`,
+            amount / 100,
+            orderId,
+            paymentId
+          )
         )
-      )
-    } catch (mailError) {
-      console.log("Payment success email skipped/failed:", mailError?.message || mailError)
+      } catch (mailError) {
+        console.log("Payment success email skipped/failed:", mailError?.message || mailError)
+      }
     }
 
     return res.status(200).json({
@@ -154,7 +168,7 @@ exports.sendPaymentSuccessEmail = async (req, res) => {
   }
 }
 
-// Enroll the student in the courses without letting email timeouts break enrollment
+// Enroll the student in the courses (fast-path email skip for demo accounts)
 const enrollStudents = async (courses, userId) => {
   if (!courses || !userId) {
     return {
@@ -205,18 +219,20 @@ const enrollStudents = async (courses, userId) => {
         }
       }
 
-      try {
-        const emailResponse = await mailSender(
-          enrolledStudent.email,
-          `Successfully Enrolled into ${enrolledCourse.courseName}`,
-          courseEnrollmentEmail(
-            enrolledCourse.courseName,
-            `${enrolledStudent.firstName} ${enrolledStudent.lastName}`
+      if (!isDemoAccount(enrolledStudent)) {
+        try {
+          const emailResponse = await mailSender(
+            enrolledStudent.email,
+            `Successfully Enrolled into ${enrolledCourse.courseName}`,
+            courseEnrollmentEmail(
+              enrolledCourse.courseName,
+              `${enrolledStudent.firstName} ${enrolledStudent.lastName}`
+            )
           )
-        )
-        console.log("Email response: ", emailResponse?.response || "Sent/Skipped")
-      } catch (mailError) {
-        console.log("Enrollment email skipped/failed:", mailError?.message || mailError)
+          console.log("Email response: ", emailResponse?.response || "Sent/Skipped")
+        } catch (mailError) {
+          console.log("Enrollment email skipped/failed:", mailError?.message || mailError)
+        }
       }
     } catch (error) {
       console.log(error)
