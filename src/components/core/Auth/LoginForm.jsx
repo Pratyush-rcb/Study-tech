@@ -5,6 +5,17 @@ import { Link, useNavigate } from "react-router-dom"
 
 import { login } from "../../../services/operations/authAPI"
 
+const DEMO_ACCOUNTS = {
+  student: {
+    email: "pk201929@gmail.com",
+    password: "123456",
+  },
+  instructor: {
+    email: "sanjaykrishan666666@gmail.com",
+    password: "123456",
+  },
+}
+
 function LoginForm() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -27,6 +38,11 @@ function LoginForm() {
   const handleOnSubmit = (e) => {
     e.preventDefault()
     dispatch(login(email, password, navigate))
+  }
+
+  const handleDemoLogin = (role) => {
+    const { email: demoEmail, password: demoPassword } = DEMO_ACCOUNTS[role]
+    dispatch(login(demoEmail, demoPassword, navigate))
   }
 
   return (
@@ -89,8 +105,30 @@ function LoginForm() {
       >
         Sign In
       </button>
+
+      <div className="mt-2 rounded-lg border border-richblack-700 bg-richblack-800/70 p-3">
+        <p className="mb-2 text-center text-xs font-medium uppercase tracking-wider text-richblack-300">
+          Quick Demo Login (Recruiter / Interviewer)
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => handleDemoLogin("student")}
+            className="rounded-[8px] border border-richblack-600 bg-richblack-700 py-2 px-3 text-sm font-medium text-richblack-5 transition-all duration-200 hover:border-yellow-50 hover:text-yellow-50"
+          >
+            Demo Student
+          </button>
+          <button
+            type="button"
+            onClick={() => handleDemoLogin("instructor")}
+            className="rounded-[8px] border border-richblack-600 bg-richblack-700 py-2 px-3 text-sm font-medium text-richblack-5 transition-all duration-200 hover:border-yellow-50 hover:text-yellow-50"
+          >
+            Demo Instructor
+          </button>
+        </div>
+      </div>
     </form>
   )
 }
 
-export default LoginForm
+export default LoginForm;
